@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  reports   Report[]  
+  devices   Device[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model Device {
+  id        String   @id @default(uuid())
+  name      String
+  location  String?
+  latitude  Float?
+  longitude Float?
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  detections Detection[]
+  reports    Report[]
+
+  createdAt DateTime @default(now())
+}
+
+
+
+model Detection {
+  id             String   @id @default(uuid())
+  mlConfidence   Float?
+  temperature    Float?
+  smokeLevel     Float?
+  sensorTriggered Boolean
+
+  deviceId       String
+  device         Device   @relation(fields: [deviceId], references: [id])
+
+  reportId       String?
+  report         Report?  @relation(fields: [reportId], references: [id])
+
+  files          File[]
+
+  processed      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+
+model Report {
+  id          String        @id @default(uuid())
+  severity    SeverityLevel
+  status      ReportStatus  @default(PENDING)
+
+  latitude    Float
+  longitude   Float
+
+  deviceId    String
+  device      Device        @relation(fields: [deviceId], references: [id])
+
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+
+  detections  Detection[]   // relation
+
+  escalatedAt DateTime?
+  resolvedAt  DateTime?
+
+  createdAt   DateTime      @default(now())
+}
+
+
+
+model File {
+  id           String   @id @default(uuid())
+  originalName String
+  fileName     String
+  mimeType     String
+  size         Int
+  path         String
+  url          String
+
+  detectionId  String?
+  detection    Detection? @relation(fields: [detectionId], references: [id])
+
+  createdAt    DateTime @default(now())
+}
+
+enum ReportStatus {
+  PENDING
+  CONFIRMED
+  FALSE_ALARM
+  ESCALATED
+}
+
+
+
+enum SeverityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+
+
+enum Role {
+  USER
+  ADMIN
+  FIRE_AUTHORITY
+}
