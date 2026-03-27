@@ -21,6 +21,7 @@ model User {
   email     String   @unique
   password  String
   role      Role     @default(USER)
+  isActive  Boolean  @default(true)
   reports   Report[]  
   devices   Device[]
   createdAt DateTime @default(now())
@@ -38,7 +39,7 @@ model Device {
 
   userId    String
   user      User     @relation(fields: [userId], references: [id])
-
+  isActive  Boolean  @default(true)
   detections Detection[]
   reports    Report[]
 
