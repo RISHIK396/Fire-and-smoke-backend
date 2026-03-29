@@ -9,10 +9,12 @@ import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { DevicesModule } from './devices/devices.module';
 import { ReportModule } from './report/report.module';
+import { TestGateway } from './test/test.gateway';
+import { TestController } from './test/test.controller';
 
 @Module({
   imports: [PrismaModule,DetectionModule, AuthModule,UploadModule, DevicesModule, ReportModule],
-  controllers: [AppController],
-  providers: [AppService,PrismaService],
+  controllers: [AppController, TestController],
+  providers: [AppService,PrismaService, TestGateway],
 })
 export class AppModule {}
