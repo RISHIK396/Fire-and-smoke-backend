@@ -12,14 +12,21 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('signup')
-    async signup(@Body() body: CreateUserDto, @Res() res) {
+    async signup(@Body() body: CreateUserDto, @Res({ passthrough:true }) res) {
         const payload = await this.authService.createUser(body);
         try {
-            res.status(201).json({
+            const token = payload.token;
+            res.cookie("token",token,{
+                httpOnly: true,   // 🔒 cannot access via JS
+                secure: false,    // true in production (HTTPS)
+                sameSite: 'lax',
+                maxAge: 24 * 60 * 60 * 1000 // 1 day
+            })
+            return{
                 success: true,
                 message: 'User Created Successfully',
                 data: payload
-            });
+            };
         }
         catch (error) {
             console.log(error);
@@ -28,12 +35,41 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() body: LoginUserDto, @Res() res) {
+    async login(@Body() body: LoginUserDto, @Res({ passthrough: true }) res) {
         const payload = await this.authService.login(body);
-        res.status(200).json({
-            success: true,
-            message: "User Logged in Sucessfully",
-            data: payload
+        const data = {
+            userId: payload.UserId,
+            email: payload.email,
+            name: payload.name
+        }
+
+        const token = payload.token;
+        res.cookie('token', token, {
+            httpOnly: true,   // 🔒 cannot access via JS
+            secure: false,    // true in production (HTTPS)
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
+
+        return {
+            success: true,
+            message: "User Logged in Successfully",
+            data: data
+        };
+    }
+
+    // logout api 
+    @Post('logout')
+    logout(@Res({ passthrough: true }) res) {
+        const token ="";
+        res.clearCookie('token',{
+            httpOnly: true,
+            secure: false,   // true in production (HTTPS)
+            sameSite: 'lax'
+        });
+        return{
+            success:true,
+            message :"Logged Out Successfully"
+        }
     }
 }

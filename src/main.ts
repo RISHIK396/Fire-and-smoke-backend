@@ -37,11 +37,9 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      'http://192.168.1.21:3000',
-      'http://192.168.1.21:3001',
-      'https://www.siecindia.com',
-      'http://192.168.1.21:5000'
+      "http://localhost:5173"
     ],
+    credentials:true
   });
 
   app.useGlobalInterceptors(new ResponseInterceptor());

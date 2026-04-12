@@ -36,10 +36,17 @@ export class AuthService {
             }
         });
 
+        const jwtPayload = {
+            sub: user.id,
+            email: user.email,
+        }
+        const token = this.jwtService.sign(jwtPayload);
+
         const payload = {
-            useerId: user.id,
+            userId: user.id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            token:token
         }
         return payload;
     }
@@ -72,6 +79,7 @@ export class AuthService {
             email: userExists.email,
             token: token
         }
+        
         return payload;
     }
 }
