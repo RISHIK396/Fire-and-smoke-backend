@@ -46,40 +46,47 @@ export class AuthService {
             userId: user.id,
             name: user.name,
             email: user.email,
-            token:token
+            token: token
         }
         return payload;
     }
 
     async login(body: LoginUserDto) {
-        const { email, password } = body;
-        const userExists = await this.prisma.user.findFirst({
-            where: {
-                email: email
+        try {
+            const { email, password } = body;
+            const userExists = await this.prisma.user.findFirst({
+                where: {
+                    email: email
+                }
+            });
+
+            if (!userExists) {
+                throw new NotFoundException('User not Found');
             }
-        });
+            const isPasswordValid = await bcrypt.compare(password, userExists.password);
 
-        if (!userExists) {
-            throw new NotFoundException('User not Found');
-        }
-        const isPasswordValid = await bcrypt.compare(password, userExists.password);
+            if (!isPasswordValid) {
+                throw new UnauthorizedException('Invalid Credentials');
+            }
 
-        if (!isPasswordValid) {
-            throw new UnauthorizedException('Invalid Credentials');
-        }
+            const jwtPayload = {
+                sub: userExists.id,
+                email: userExists.email,
+            }
+            const token = this.jwtService.sign(jwtPayload);
+            const payload = {
+                UserId: userExists.id,
+                name: userExists.name,
+                email: userExists.email,
+                token: token
+            }
 
-        const jwtPayload = {
-            sub: userExists.id,
-            email: userExists.email,
+            return payload;
         }
-        const token = this.jwtService.sign(jwtPayload);
-        const payload = {
-            UserId: userExists.id,
-            name: userExists.name,
-            email: userExists.email,
-            token: token
+        catch (error) {
+            console.error(error);
+            throw error;
+
         }
-        
-        return payload;
     }
 }

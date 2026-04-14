@@ -13,7 +13,7 @@ export class DevicesController {
 
     @Post()
     @UseGuards(AuthGuard('jwt'))
-    createDevice(@Body() body:CreateDeviceDto){
+    createDevice(@Body() body:CreateDeviceDto,){
         console.log("controller called",body);
         return this.devices.createDevice(body);
     }
@@ -24,5 +24,11 @@ export class DevicesController {
     getAllDevices(@Query() query:GetAllDevicesDto){
         return this.devices.getAllDevices(query);
     } 
+
+    // @Get()
+    // @UseGuards(AuthGuard('jwt'))
+    // getNoDevices(@Query() query:GetAllDevicesDto){
+    //     return this.devices.getAllDevices(query);
+    // } 
     
 }

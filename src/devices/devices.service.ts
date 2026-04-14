@@ -86,4 +86,14 @@ export class DevicesService {
         }
     }
 
-}
+    // async getNoDevices(query:GetAllDevicesDto){
+    //     try{
+    //         const {user} = query;
+    //         const data = await this.prisma.device.findMany({
+    //             select:{
+
+    //             }
+    //         })
+    //     }
+    }
+
