@@ -86,14 +86,37 @@ export class DevicesService {
         }
     }
 
-    // async getNoDevices(query:GetAllDevicesDto){
-    //     try{
-    //         const {user} = query;
-    //         const data = await this.prisma.device.findMany({
-    //             select:{
-
-    //             }
-    //         })
-    //     }
+    async getNoDevices(query:GetAllDevicesDto){
+        try{
+            const {userId} = query;
+            const total = await this.prisma.device.count({
+                where:{
+                    userId
+                }
+            });
+            return total;
+        }
+        catch(error){
+            console.log(error);
+            throw error;
+        }
     }
+
+    async getActiveDevices(query:GetAllDevicesDto){
+        try{
+            const {userId} = query;
+            const active = await this.prisma.device.count({
+                where:{
+                    userId,
+                    isActive:true
+                }
+            });
+            return active;
+        }
+        catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
+}
 

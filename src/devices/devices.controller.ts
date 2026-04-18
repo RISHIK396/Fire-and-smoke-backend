@@ -25,10 +25,15 @@ export class DevicesController {
         return this.devices.getAllDevices(query);
     } 
 
-    // @Get()
-    // @UseGuards(AuthGuard('jwt'))
-    // getNoDevices(@Query() query:GetAllDevicesDto){
-    //     return this.devices.getAllDevices(query);
-    // } 
+    @Get('/total')
+    @UseGuards(AuthGuard('jwt'))
+    getNoDevices(@Query() query:GetAllDevicesDto){
+        return this.devices.getNoDevices(query);
+    } 
     
+    @Get('/active')
+    @UseGuards(AuthGuard('jwt'))
+    getActiveDevices(@Query() query:GetAllDevicesDto){
+        return this.devices.getActiveDevices(query);
+    }
 }
