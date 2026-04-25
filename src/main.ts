@@ -10,6 +10,7 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 import { HttpExceptionFilter } from './common/interceptors/failure.interceptor';
 import * as express from 'express';
 import * as fs from 'fs';
+import 'dotenv/config';
 
 const uploadFolder = 'C:/upload';
 async function bootstrap() {

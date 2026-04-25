@@ -13,7 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
     constructor(private prisma: PrismaService, private jwtService: JwtService) { }
     async createUser(body: CreateUserDto) {
-        const { name, password, email } = body;
+        const { name, password, email,phone } = body;
         const emailExists = await this.prisma.user.findUnique({
             where: {
                 email: email
@@ -33,6 +33,7 @@ export class AuthService {
                 name,
                 password: hashedPassword,
                 email,
+                phone
             }
         });
 
@@ -40,13 +41,14 @@ export class AuthService {
             sub: user.id,
             email: user.email,
         }
-        const token = this.jwtService.sign(jwtPayload);
+        const token =  this.jwtService.sign(jwtPayload);
 
         const payload = {
             userId: user.id,
             name: user.name,
             email: user.email,
-            token: token
+            phone:user.phone,
+            token
         }
         return payload;
     }

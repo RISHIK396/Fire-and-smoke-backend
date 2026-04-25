@@ -11,9 +11,12 @@ import { DevicesModule } from './devices/devices.module';
 import { ReportModule } from './report/report.module';
 import { TestGateway } from './test/test.gateway';
 import { TestController } from './test/test.controller';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [PrismaModule,DetectionModule, AuthModule,UploadModule, DevicesModule, ReportModule],
+  imports: [PrismaModule,DetectionModule, AuthModule,UploadModule, DevicesModule, ReportModule,ConfigModule.forRoot({
+      isGlobal: true, // 👈 VERY IMPORTANT
+    }),],
   controllers: [AppController, TestController],
   providers: [AppService,PrismaService, TestGateway],
 })

@@ -10,6 +10,13 @@ export class PrismaService
   async onModuleInit() {
     await this.$connect();
   }
+  constructor() {
+    console.log("DB URL:", process.env.DATABASE_URL); 
+    
+    super({
+      datasourceUrl: process.env.DATABASE_URL, // ✅ now this will work
+    });
+  }
 
   async onModuleDestroy() {
     await this.$disconnect();
