@@ -80,6 +80,7 @@ export class AuthService {
                 UserId: userExists.id,
                 name: userExists.name,
                 email: userExists.email,
+                phone:userExists.phone,
                 token: token
             }
 

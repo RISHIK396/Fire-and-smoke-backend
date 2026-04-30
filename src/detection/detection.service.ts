@@ -13,12 +13,14 @@ import { CreateDetectionEntry } from './dto/detection.dto';
 import { v7 as uuidv7 } from 'uuid';
 import { UUID } from 'crypto';
 import { ReportService } from '../report/report.service';
+import { DetectionGateway } from './detection.gateway';
 
 @Injectable()
 export class DetectionService {
     constructor(private prisma: PrismaService,
         private upload: UploadService,
-        private reportService: ReportService
+        private reportService: ReportService,
+        private gateway:DetectionGateway
     ) { }
 
     async registerDetection(
@@ -58,7 +60,7 @@ export class DetectionService {
                 throw new BadRequestException("Image file is required");
             }
 
-            const uploaded = await this.upload.saveFileData(file, detection.id as UUID);
+            const uploaded = await this.upload.saveFileData(file, detection.id);
             fileRecord = uploaded.data;
 
             const finalDetection = await this.prisma.detection.findUnique({
@@ -76,7 +78,7 @@ export class DetectionService {
                 await this.reportService.createReportFromDetection(finalDetection);
             }
             if (finalDetection) {
-                return {
+                const alert =  {
                     detectionId: finalDetection.id,
                     temperature: finalDetection.temperature,
                     smokeLevel: finalDetection.smokeLevel,
@@ -84,6 +86,9 @@ export class DetectionService {
                     createdAt: finalDetection.createdAt,
                     imageUrls: finalDetection.files.map(file => file.url)
                 }
+                this.gateway.sendFireAlert(alert);
+                return alert;
+
             }
         } catch (error) {
             console.log(error);

@@ -23,7 +23,7 @@ export class DetectionController {
     }
 
     // @Get()
-    // getDetection(): string {
-        // return awair this.pr
+    // getDetection(@Query() query): string {
+    //     return 
     // }
 }
