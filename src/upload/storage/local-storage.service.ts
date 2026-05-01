@@ -1,24 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
-import { StorageProvider } from './storage.interface';
+import cloudinary from 'cloudinary.config';
 
 @Injectable()
-export class LocalStorageService implements StorageProvider {
+export class LocalStorageService {
   async upload(file: Express.Multer.File) {
-    if (!file.path || !file.filename) {
-      throw new Error('File upload failed, file.path or file.filename missing');
-    }
+    const result = await cloudinary.uploader.upload(file.path, {
+      folder: 'fire-detection',
+    });
 
-    const fileName = file.filename;
-    const publicUrl = `C:/uploads/${fileName}`; // can also use BASE_URL if needed
-
-    return { fileName, path: file.path, url: publicUrl };
+    return {
+      fileName: result.public_id,
+      path: result.secure_url,
+      url: result.secure_url, // ✅ directly usable in frontend
+    };
   }
 
-  async delete(filePath: string) {
-    const fs = await import('fs');
-    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  async delete(publicId: string) {
+    await cloudinary.uploader.destroy(publicId);
   }
 }

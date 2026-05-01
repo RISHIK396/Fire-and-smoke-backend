@@ -73,7 +73,7 @@ export class ReportService {
                             sensorTriggered:true,
                             files:{
                                 select:{
-                                    path:true,
+                                    url:true,
                                     createdAt:true
                                 }
                             }

@@ -8,6 +8,8 @@ import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './common/interceptors/failure.interceptor';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 import * as express from 'express';
 import * as fs from 'fs';
 import 'dotenv/config';
@@ -23,7 +25,7 @@ async function bootstrap() {
 
   // ✅ Enable cookie parser
   app.use(cookieParser());
-  app.use('/upload', express.static('C:/upload'));
+  app.use('/uploads', express.static(uploadFolder));
 
   // ✅ Global validation
   app.useGlobalPipes(
