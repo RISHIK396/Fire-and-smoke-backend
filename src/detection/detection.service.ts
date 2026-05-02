@@ -14,13 +14,15 @@ import { v7 as uuidv7 } from 'uuid';
 import { UUID } from 'crypto';
 import { ReportService } from '../report/report.service';
 import { DetectionGateway } from './detection.gateway';
+import { SmsService } from 'src/sms/sms.service';
 
 @Injectable()
 export class DetectionService {
     constructor(private prisma: PrismaService,
         private upload: UploadService,
         private reportService: ReportService,
-        private gateway:DetectionGateway
+        private gateway:DetectionGateway,
+         private smsService: SmsService
     ) { }
 
     async registerDetection(
@@ -65,9 +67,16 @@ export class DetectionService {
 
             const finalDetection = await this.prisma.detection.findUnique({
                 where: { id: detection.id },
-                include: {
-                    files: true
+                include:{
+                    files:true,
+                    device:{
+                        include:{
+                            user:true
+                        }
+                    }
                 }
+                
+
             });
             // now here we will send the 
             if (
@@ -76,15 +85,23 @@ export class DetectionService {
                 (mlConfidence > 0.8 || sensorTriggered)
             ) {
                 await this.reportService.createReportFromDetection(finalDetection);
+                const link = `http://localhost:3000/alert/${finalDetection.alertToken}`;
+                await this.smsService.sendAlert(
+                    finalDetection.device.user.phone,
+                    link,
+                    finalDetection.device.location ?? 'Unknown Location'
+                );
             }
             if (finalDetection) {
                 const alert =  {
-                    detectionId: finalDetection.id,
+                    deviceId:finalDetection.device.id,
                     temperature: finalDetection.temperature,
                     smokeLevel: finalDetection.smokeLevel,
                     mlConfidence: finalDetection.mlConfidence,
                     createdAt: finalDetection.createdAt,
-                    imageUrls: finalDetection.files.map(file => file.url)
+                    image: finalDetection.files[0]?.url,
+                    deviceName:finalDetection.device.name,
+                    location:finalDetection.device.location,
                 }
                 this.gateway.sendFireAlert(alert);
                 return alert;

@@ -12,12 +12,17 @@ import { ReportModule } from './report/report.module';
 import { TestGateway } from './test/test.gateway';
 import { TestController } from './test/test.controller';
 import { ConfigModule } from '@nestjs/config';
+import { AlertController } from './alert/alert.controller';
+import { AlertService } from './alert/alert.service';
+import { AlertModule } from './alert/alert.module';
+import { SmsService } from './sms/sms.service';
+import { SmsModule } from './sms/sms.module';
 
 @Module({
   imports: [PrismaModule,DetectionModule, AuthModule,UploadModule, DevicesModule, ReportModule,ConfigModule.forRoot({
       isGlobal: true, // 👈 VERY IMPORTANT
-    }),],
-  controllers: [AppController, TestController],
-  providers: [AppService,PrismaService, TestGateway],
+    }), AlertModule, SmsModule,],
+  controllers: [AppController, TestController, AlertController],
+  providers: [AppService,PrismaService, TestGateway, AlertService, SmsService],
 })
 export class AppModule {}

@@ -64,7 +64,7 @@ model Detection {
   report         Report?  @relation(fields: [reportId], references: [id])
 
   files          File[]
-
+  alertToken     String   @unique   @default(uuid())
   processed      Boolean  @default(false)
   createdAt      DateTime @default(now())
 }
