@@ -9,6 +9,7 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { logger } from 'src/logger';
 
 @WebSocketGateway({
   cors: { origin: '*' },
@@ -24,7 +25,7 @@ export class TestGateway {
     @ConnectedSocket() client: Socket,
   ) {
     client.join(userId);
-    console.log(`✅ User joined room: ${userId}`);
+    logger.info(`✅ User joined room: ${userId}`);
   }
 
   // 🔥 SEND ONLY TO SPECIFIC USER

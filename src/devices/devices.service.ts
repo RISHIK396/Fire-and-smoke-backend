@@ -5,6 +5,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDeviceDto, GetAllDevicesDto } from './dto/devices.dto';
 import { v7 as uuidv7 } from 'uuid';
+import { logger } from 'src/logger';
 
 @Injectable()
 export class DevicesService {
@@ -14,7 +15,7 @@ export class DevicesService {
     async createDevice(body: CreateDeviceDto) {
         const { userId, name, location, latitude, longitude } = body;
         try {
-            console.log("Function called");
+            logger.info("Function called");
             const device = await this.prisma.user.findUnique({
                 where: {
                     id: userId
@@ -81,7 +82,7 @@ export class DevicesService {
                 devices
             }
         } catch (error) {
-            console.log('🔥 ERROR:', error);
+            logger.info('🔥 ERROR:', error);
             throw error;
         }
     }
@@ -97,7 +98,7 @@ export class DevicesService {
             return total;
         }
         catch(error){
-            console.log(error);
+            logger.info(error);
             throw error;
         }
     }
@@ -114,7 +115,7 @@ export class DevicesService {
             return active;
         }
         catch(error){
-            console.log(error);
+            logger.info(error);
             throw error;
         }
     }

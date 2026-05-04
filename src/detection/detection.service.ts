@@ -15,6 +15,7 @@ import { UUID } from 'crypto';
 import { ReportService } from '../report/report.service';
 import { DetectionGateway } from './detection.gateway';
 import { SmsService } from 'src/sms/sms.service';
+import { logger } from 'src/logger';
 
 @Injectable()
 export class DetectionService {
@@ -91,8 +92,8 @@ export class DetectionService {
                 const phone = rawPhone.startsWith("+91")
                 ? rawPhone
                 : `+91${rawPhone}`;
-                console.log("📲 Final phone:", phone);
-                console.log("🔗 Alert link:", link);
+                logger.info("📲 Final phone:", phone);
+                logger.info("🔗 Alert link:", link);
                 try {
                     await this.smsService.sendAlert(
                         phone,
@@ -100,7 +101,7 @@ export class DetectionService {
                         finalDetection.device.location ?? 'Unknown Location'
                     );
 
-                    console.log("✅ SMS Triggered");
+                    logger.info("✅ SMS Triggered");
 
                     } 
                     catch (err) {
@@ -124,7 +125,7 @@ export class DetectionService {
 
             }
         } catch (error) {
-            console.log(error);
+            logger.info(error);
             throw error;
         }
     }

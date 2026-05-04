@@ -7,6 +7,7 @@ import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto/auth.dto';
 import path from 'path';
+import { logger } from 'src/logger';
 
 @Controller('auth')
 export class AuthController {
@@ -30,7 +31,7 @@ export class AuthController {
             };
         }
         catch (error) {
-            console.log(error);
+            logger.info(error);
             throw new Error('Failed to create user');
         }
     }

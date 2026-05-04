@@ -5,6 +5,7 @@ import { Controller, Query, UseGuards,Get, Post, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto, GetAllDevicesDto } from './dto/devices.dto';
+import { logger } from 'src/logger';
 
 @Controller('devices')
 export class DevicesController {
@@ -14,7 +15,7 @@ export class DevicesController {
     @Post()
     @UseGuards(AuthGuard('jwt'))
     createDevice(@Body() body:CreateDeviceDto,){
-        console.log("controller called",body);
+        logger.info("controller called",body);
         return this.devices.createDevice(body);
     }
 

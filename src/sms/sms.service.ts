@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
+import { logger } from 'src/logger';
 import { Twilio } from 'twilio';
 
 @Injectable()
@@ -16,7 +17,7 @@ export class SmsService {
     }
 
     async sendAlert(phone: string, link: string, location: string) {
-        console.log("Called the message sending thing Twilio");
+        logger.info("Called the message sending thing Twilio");
 
         await this.client.messages.create({
             body: `🚨 FIRE ALERT!
@@ -25,6 +26,6 @@ Open immediately: ${link}`,
             from: process.env.TWILIO_PHONE,
             to: phone
         });
-        console.log("Message sent");
+        logger.info("Message sent");
     }
 }

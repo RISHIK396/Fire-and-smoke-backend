@@ -13,6 +13,7 @@ import { join } from 'path';
 import * as express from 'express';
 import * as fs from 'fs';
 import 'dotenv/config';
+import { logger } from './logger';
 
 const uploadFolder = 'C:/upload';
 async function bootstrap() {
@@ -20,7 +21,7 @@ async function bootstrap() {
 
   if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder, { recursive: true });
-    console.log(`Created folder at ${uploadFolder}`);
+    logger.info(`Created folder at ${uploadFolder}`);
   }
 
   // ✅ Enable cookie parser
