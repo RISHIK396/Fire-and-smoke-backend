@@ -85,7 +85,7 @@ export class DetectionService {
                 (mlConfidence > 0.8 || sensorTriggered)
             ) {
                 await this.reportService.createReportFromDetection(finalDetection);
-                const link = `http://localhost:3000/alert/${finalDetection.alertToken}`;
+                const link = `https://smart-anomaly-detector-liard.vercel.app/alert/${finalDetection.alertToken}`;
                 await this.smsService.sendAlert(
                     finalDetection.device.user.phone,
                     link,
