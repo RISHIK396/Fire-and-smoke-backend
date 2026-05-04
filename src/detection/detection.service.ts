@@ -93,11 +93,19 @@ export class DetectionService {
                 : `+91${rawPhone}`;
                 console.log("📲 Final phone:", phone);
                 console.log("🔗 Alert link:", link);
-                await this.smsService.sendAlert(
-                    phone,
-                    link,
-                    finalDetection.device.location ?? 'Unknown Location'
-                );
+                try {
+                    await this.smsService.sendAlert(
+                        phone,
+                        link,
+                        finalDetection.device.location ?? 'Unknown Location'
+                    );
+
+                    console.log("✅ SMS Triggered");
+
+                    } 
+                    catch (err) {
+                        console.error("❌ SMS Failed:");
+                    }
             }
             if (finalDetection) {
                 const alert =  {
