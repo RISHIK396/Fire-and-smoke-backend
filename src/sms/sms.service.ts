@@ -16,6 +16,8 @@ export class SmsService {
     }
 
     async sendAlert(phone: string, link: string, location: string) {
+        console.log("Called the message sending thing Twilio");
+
         await this.client.messages.create({
             body: `🚨 FIRE ALERT!
 Location: ${location}
@@ -23,5 +25,6 @@ Open immediately: ${link}`,
             from: process.env.TWILIO_PHONE,
             to: phone
         });
+        console.log("Message sent");
     }
 }
