@@ -13,15 +13,24 @@ import { join } from 'path';
 import * as express from 'express';
 import * as fs from 'fs';
 import 'dotenv/config';
-import { logger } from './logger';
+import { WinstonModule } from 'nest-winston';
+import { winstonConfig } from './logger';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('Main');
 
 const uploadFolder = 'C:/upload';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
 
+const app = await NestFactory.create(
+  AppModule,
+  {
+    logger: WinstonModule.createLogger(winstonConfig),
+  }
+);
   if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder, { recursive: true });
-    logger.info(`Created folder at ${uploadFolder}`);
+    logger.log(`Created folder at ${uploadFolder}`);
   }
 
   // ✅ Enable cookie parser

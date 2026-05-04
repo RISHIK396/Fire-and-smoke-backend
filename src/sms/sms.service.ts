@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { logger } from 'src/logger';
 import { Twilio } from 'twilio';
+import { Logger } from '@nestjs/common';
 
+const logger = new Logger('SmsService');
 @Injectable()
 export class SmsService {
     private client;
@@ -17,7 +18,7 @@ export class SmsService {
     }
 
     async sendAlert(phone: string, link: string, location: string) {
-        logger.info("Called the message sending thing Twilio");
+        logger.log("Called the message sending thing Twilio");
 
         await this.client.messages.create({
             body: `🚨 FIRE ALERT!
@@ -26,6 +27,6 @@ Open immediately: ${link}`,
             from: process.env.TWILIO_PHONE,
             to: phone
         });
-        logger.info("Message sent");
+        logger.log("Message sent");
     }
 }

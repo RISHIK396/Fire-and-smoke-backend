@@ -15,7 +15,9 @@ import { UUID } from 'crypto';
 import { ReportService } from '../report/report.service';
 import { DetectionGateway } from './detection.gateway';
 import { SmsService } from 'src/sms/sms.service';
-import { logger } from 'src/logger';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('DetectionService');
 
 @Injectable()
 export class DetectionService {
@@ -92,8 +94,8 @@ export class DetectionService {
                 const phone = rawPhone.startsWith("+91")
                 ? rawPhone
                 : `+91${rawPhone}`;
-                logger.info("📲 Final phone:", phone);
-                logger.info("🔗 Alert link:", link);
+                logger.log("📲 Final phone:", phone);
+                logger.log("🔗 Alert link:", link);
                 try {
                     await this.smsService.sendAlert(
                         phone,
@@ -101,11 +103,11 @@ export class DetectionService {
                         finalDetection.device.location ?? 'Unknown Location'
                     );
 
-                    logger.info("✅ SMS Triggered");
+                    logger.log("✅ SMS Triggered");
 
                     } 
                     catch (err) {
-                        console.error("❌ SMS Failed:");
+                        logger.error("❌ SMS Failed:");
                     }
             }
             // hello
@@ -125,7 +127,7 @@ export class DetectionService {
 
             }
         } catch (error) {
-            logger.info(error);
+            logger.error(error);
             throw error;
         }
     }
