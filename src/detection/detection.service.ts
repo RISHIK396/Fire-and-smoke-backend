@@ -107,6 +107,7 @@ export class DetectionService {
                         console.error("❌ SMS Failed:");
                     }
             }
+            // hello
             if (finalDetection) {
                 const alert =  {
                     deviceId:finalDetection.device.id,
