@@ -86,7 +86,11 @@ export class DetectionService {
             ) {
                 await this.reportService.createReportFromDetection(finalDetection);
                 const link = `https://smart-anomaly-detector-liard.vercel.app/alert/${finalDetection.alertToken}`;
-                const phone = `+91${finalDetection.device.user.phone}`;
+                const rawPhone = finalDetection.device.user.phone;
+
+                const phone = rawPhone.startsWith("+91")
+                ? rawPhone
+                : `+91${rawPhone}`;
                 await this.smsService.sendAlert(
                     phone,
                     link,
