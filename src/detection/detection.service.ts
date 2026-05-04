@@ -91,6 +91,8 @@ export class DetectionService {
                 const phone = rawPhone.startsWith("+91")
                 ? rawPhone
                 : `+91${rawPhone}`;
+                console.log("📲 Final phone:", phone);
+                console.log("🔗 Alert link:", link);
                 await this.smsService.sendAlert(
                     phone,
                     link,
