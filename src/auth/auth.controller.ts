@@ -20,12 +20,15 @@ export class AuthController {
         const payload = await this.authService.createUser(body);
         try {
             const token = payload.token;
-            res.cookie("token", token, {
-                httpOnly: true,   // 🔒 cannot access via JS
-                secure: false,    // true in production (HTTPS)
-                sameSite: 'lax',
-                maxAge: 24 * 60 * 60 * 1000 // 1 day
-            })
+            const isProd = process.env.NODE_ENV === "production";
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: isProd,
+                sameSite: isProd ? 'none' : 'lax',
+                path: "/",
+                maxAge: 24 * 60 * 60 * 1000
+            });
             return {
                 success: true,
                 message: 'User Created Successfully',
@@ -46,16 +49,18 @@ export class AuthController {
             userId: payload.UserId,
             email: payload.email,
             name: payload.name,
-            token:payload.token
+            token: payload.token
         }
 
         const token = payload.token;
+        const isProd = process.env.NODE_ENV === "production";
+
         res.cookie('token', token, {
-            httpOnly: true,   // 🔒 cannot access via JS
-            secure: false,    // true in production (HTTPS)
-            sameSite: 'lax',
-            path:"/",
-            maxAge: 24 * 60 * 60 * 1000 // 1 day
+            httpOnly: true,
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'lax',
+            path: "/",
+            maxAge: 24 * 60 * 60 * 1000
         });
 
         return {
@@ -68,11 +73,14 @@ export class AuthController {
     // logout api 
     @Post('logout')
     logout(@Res({ passthrough: true }) res) {
+
+        const isProd = process.env.NODE_ENV === "production";
+
         res.clearCookie('token', {
             httpOnly: true,
-            secure: false, // true in production
-            sameSite: 'lax',
-            path:'/'
+            secure: isProd,              // ✅ match login
+            sameSite: isProd ? 'none' : 'lax', // ✅ match login
+            path: '/'
         });
 
         return {
