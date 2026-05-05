@@ -39,7 +39,7 @@ export class DevicesService {
                 }
             })
             return {
-                deviceId: newDevice.id,
+                id: newDevice.id,
                 name: newDevice.name,
                 location: newDevice.location,
                 longitude: newDevice.longitude,
