@@ -143,6 +143,9 @@ export class DevicesService {
                     isActive: false
                 }
             });
+            return{
+                deletion:true
+            }
         }
         catch (error) {
             console.log(error);
