@@ -3,7 +3,7 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateDeviceDto, GetAllDevicesDto } from './dto/devices.dto';
+import { CreateDeviceDto, DeleteDeviceDto, GetAllDevicesDto } from './dto/devices.dto';
 import { v7 as uuidv7 } from 'uuid';
 import { Logger } from '@nestjs/common';
 
@@ -89,37 +89,66 @@ export class DevicesService {
         }
     }
 
-    async getNoDevices(query:GetAllDevicesDto){
-        try{
-            const {userId} = query;
+    async getNoDevices(query: GetAllDevicesDto) {
+        try {
+            const { userId } = query;
             const total = await this.prisma.device.count({
-                where:{
+                where: {
                     userId
                 }
             });
             return total;
         }
-        catch(error){
+        catch (error) {
             logger.error(error);
             throw error;
         }
     }
 
-    async getActiveDevices(query:GetAllDevicesDto){
-        try{
-            const {userId} = query;
+    async getActiveDevices(query: GetAllDevicesDto) {
+        try {
+            const { userId } = query;
             const active = await this.prisma.device.count({
-                where:{
+                where: {
                     userId,
-                    isActive:true
+                    isActive: true
                 }
             });
             return active;
         }
-        catch(error){
+        catch (error) {
             logger.error(error);
             throw error;
         }
     }
+
+    async deleteActiveDevice(body: DeleteDeviceDto) {
+        try {
+            const { deviceId } = body;
+            const isExisting = await this.prisma.device.findFirst({
+                where: {
+                    id: deviceId
+                }
+            });
+
+            if (!isExisting) {
+                throw new NotFoundException("No such Device Found");
+            }
+
+            const deleteDevice = await this.prisma.device.update({
+                where: {
+                    id: deviceId
+                },
+                data: {
+                    isActive: false
+                }
+            });
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
 }
 

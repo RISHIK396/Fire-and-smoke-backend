@@ -36,3 +36,9 @@ export class GetAllDevicesDto {
 
 
 }
+
+export class DeleteDeviceDto{
+    @IsNotEmpty()
+    @IsUUID()
+    deviceId!:string;
+}

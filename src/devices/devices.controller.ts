@@ -4,7 +4,7 @@
 import { Controller, Query, UseGuards,Get, Post, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { DevicesService } from './devices.service';
-import { CreateDeviceDto, GetAllDevicesDto } from './dto/devices.dto';
+import { CreateDeviceDto, DeleteDeviceDto, GetAllDevicesDto } from './dto/devices.dto';
 import { Logger } from '@nestjs/common';
 
 const logger = new Logger('DevicesController');
@@ -38,5 +38,11 @@ export class DevicesController {
     @UseGuards(AuthGuard('jwt'))
     getActiveDevices(@Query() query:GetAllDevicesDto){
         return this.devices.getActiveDevices(query);
+    }
+
+    @Post('/delete')
+    @UseGuards(AuthGuard('jwt'))
+    deleteActiveDevices(@Body() body:DeleteDeviceDto){
+        return this.devices.deleteActiveDevice(body);
     }
 }
