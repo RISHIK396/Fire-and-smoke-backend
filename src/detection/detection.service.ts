@@ -85,7 +85,7 @@ export class DetectionService {
             if (
                 finalDetection &&
                 mlConfidence != null &&
-                (mlConfidence > 0.8 || sensorTriggered)
+                (mlConfidence > 0.7 || sensorTriggered)
             ) {
                 await this.reportService.createReportFromDetection(finalDetection);
                 const link = `https://smart-anomaly-detector-liard.vercel.app/alert/${finalDetection.alertToken}`;

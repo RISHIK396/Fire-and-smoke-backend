@@ -62,7 +62,7 @@ export class ReportService {
                     device:{
                         select:{
                             name:true,
-                            location:true
+                            location:true,
                         }
                     },
                     detections:{

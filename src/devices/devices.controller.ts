@@ -41,7 +41,7 @@ export class DevicesController {
     }
 
     @Post('/delete')
-    @UseGuards(AuthGuard('jwt'))
+    // @UseGuards(AuthGuard('jwt'))
     deleteActiveDevices(@Body() body:DeleteDeviceDto){
         return this.devices.deleteActiveDevice(body);
     }

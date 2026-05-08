@@ -70,7 +70,8 @@ export class DevicesService {
 
             const devices = await this.prisma.device.findMany({
                 where: {
-                    userId
+                    userId,
+                    isActive:true
                 },
                 select: {
                     id: true,
